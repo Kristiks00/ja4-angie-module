@@ -4,4 +4,7 @@
 *.crt
 *.key
 *.pem
-nginx_utils/logs
+*/logs
+openssl
+angie
+angie_local
