@@ -6,5 +6,6 @@
 *.pem
 */logs
 openssl
-angie
-angie_local
+angie*
+*Angie*
+.vscode

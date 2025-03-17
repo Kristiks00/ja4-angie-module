@@ -3,9 +3,8 @@
 This fork of [ja4-nginx-module](https://github.com/FoxIO-LLC/ja4-nginx-module) was modified to use ja4-fingerprints under angie's control.
 
 ## Installation:
-`git clone git@github.com:Kristiks00/ja4-angie-module.git`  
-`cd ja4-angie-module`  
-`make`
+Use `make` to download dependencies with patches (openssh, angie, etc)
+If an error occurs, resolve conflict and use `make install`
 
 ## Start:
 
@@ -17,3 +16,11 @@ Then run: `sudo make start`
 `cp angie.conf ./angie_local/conf/angie.conf`  
 `make gen-certs`  
 `sudo make start`
+
+### Some typical errors:
+
+`sudo apt update error: "Release file is not yet valid"` -> `sudo hwclock --hctosys`
+`module requires the PCRE library`                       -> `sudo apt-get install libpcre3 libpcre3-dev`
+`module requires the zlib library`                       -> `sudo apt install zlib1g-dev`
+`checking for C compiler ... not found`
+`C compiler cc is not found`                             -> `sudo apt install gcc`
