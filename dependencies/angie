@@ -1,0 +1,40 @@
+#!/bin/sh -e
+
+echo "Not implemented yet"
+exit 1
+
+PREFIX=$1
+ANGIE_VERSION=$2
+OPENSSL_VERSION=$3
+
+wget https://download.angie.software/files/angie-$ANGIE_VERSION.tar.gz
+tar -xvf angie-$ANGIE_VERSION.tar.gz
+rm angie-$ANGIE_VERSION.tar.gz
+cd angie-$ANGIE_VERSION
+patch -p1 < ../patches/angie-$ANGIE_VERSION.patch
+
+# install luajit2 (necessary for angie-module-lua)
+export LUAJIT_LIB=/usr/local/lib/ && export LUAJIT_INC=/usr/local/include/luajit-2.1/
+#cd ../angie-module-lua/luajit2-2.1-20250117/
+#make -j2 && sudo make install
+
+# make binary
+#cd ../../angie-$ANGIE_VERSION
+./configure --prefix=/etc/angie --conf-path=/etc/angie/angie.conf --error-log-path=/var/log/angie/error.log --http-log-path=/var/log/angie/access.log --lock-path=/run/angie.lock --modules-path=/usr/lib/angie/modules --pid-path=/run/angie.pid --sbin-path=/usr/sbin/angie --http-acme-client-path=/var/lib/angie/acme --http-client-body-temp-path=/var/cache/angie/client_temp --http-fastcgi-temp-path=/var/cache/angie/fastcgi_temp --http-proxy-temp-path=/var/cache/angie/proxy_temp --http-scgi-temp-path=/var/cache/angie/scgi_temp --http-uwsgi-temp-path=/var/cache/angie/uwsgi_temp --user=angie --group=angie --with-file-aio --with-http_acme_module --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_v3_module --with-mail --with-mail_ssl_module --with-stream --with-stream_mqtt_preread_module --with-stream_rdp_preread_module --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --with-threads --feature-cache=../angie-feature-cache --with-ld-opt='-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -Wl,-z,now' \
+    --with-http_ssl_module --with-openssl=../openssl-$OPENSSL_VERSION \
+    --add-module=../src \
+    #--with-stream --with-stream_ssl_module \
+    #--add-dynamic-module=../angie-module-lua/stream-lua-nginx-module-0.0.16 \
+    #--add-dynamic-module=../angie-module-lua/ngx_devel_kit-0.3.4 \
+    #--add-dynamic-module=../angie-module-lua/lua-nginx-module-0.10.28 \
+    #--modules-path="/usr/lib/angie/modules" \
+    #--prefix=$PREFIX
+make -j2
+sudo make install
+
+# install lua-resty-* (necessary for angie-module-lua)
+#cd ../angie-module-lua/lua-resty-core-0.1.31
+# раскомментить lua version ?
+#sudo make install PREFIX=$PREFIX
+#cd ../lua-resty-lrucache-0.15
+#sudo make install PREFIX=$PREFIX

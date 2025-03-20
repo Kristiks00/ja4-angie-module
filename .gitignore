@@ -5,7 +5,6 @@
 *.key
 *.pem
 */logs
-openssl
-angie*
-*Angie*
+openssl/
+angie/
 .vscode

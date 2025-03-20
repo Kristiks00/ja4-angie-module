@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+PREFIX=$1
+OPENRESTY_VERSION=$2
+NGINX_VERSION=$3
+OPENSSL_VERSION=$4
+
+wget https://openresty.org/download/openresty-$OPENRESTY_VERSION.tar.gz
+tar -xvf openresty-$OPENRESTY_VERSION.tar.gz
+rm openresty-$OPENRESTY_VERSION.tar.gz
+cd openresty-$OPENRESTY_VERSION/bundle/nginx-$NGINX_VERSION
+patch -p1 < ../../../patches/openresty-$OPENRESTY_VERSION.patch
+cd ../..
+./configure -j2 $(openresty -V) \
+     --with-http_ssl_module --with-openssl=../openssl-$OPENSSL_VERSION \
+     --add-module=../src \
+     --prefix=$PREFIX
+gmake -j2
+gmake install
